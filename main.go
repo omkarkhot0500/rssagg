@@ -77,6 +77,10 @@ func main() {
 	// calls handlerUsersCreate function
 	v1Router.Post("/users", apiCfg.handlerUsersCreate)
 
+	// GET /v1/users → get user info based on API key
+	// calls handlerUsersGet function
+	v1Router.Get("/users", apiCfg.handlerUsersGet)
+
 	// Health check route to see if server is running
 	v1Router.Get("/healthz", handlerReadiness)
 
