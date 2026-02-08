@@ -74,6 +74,7 @@ func (cfg *apiConfig) handlerUsersGet(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Convert database user into API response format
+	
 	// and send it back as JSON response
 	respondWithJSON(w, http.StatusOK, databaseUserToUser(user))
 }
