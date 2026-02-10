@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/omkarkhot0500/rssagg/internal/auth"
+	// "github.com/omkarkhot0500/rssagg/internal/auth"
 	"github.com/google/uuid"
 	"github.com/omkarkhot0500/rssagg/internal/database"
 )
@@ -51,30 +51,42 @@ func (cfg *apiConfig) handlerUsersCreate(w http.ResponseWriter, r *http.Request)
 	respondWithJSON(w, http.StatusOK, databaseUserToUser(user))
 }
 
-// handlerUsersGet handles request to get user info using API key
-// it checks the API key from headers and fetches the user from DB
-func (cfg *apiConfig) handlerUsersGet(w http.ResponseWriter, r *http.Request) {
+// // handlerUsersGet handles request to get user info using API key              old way == request → handlerUsersGet → read API key → query DB → respond
 
-	// Read API key from request headers
-	// auth.GetAPIKey looks for a key like: Authorization: ApiKey xxxx
-	apiKey, err := auth.GetAPIKey(r.Header)
-	if err != nil {
-		// If API key is missing or invalid, return unauthorized error
-		respondWithError(w, http.StatusUnauthorized, "Couldn't find api key")
-		return
-	}
+// // it checks the API key from headers and fetches the user from DB
+// func (cfg *apiConfig) handlerUsersGet(w http.ResponseWriter, r *http.Request) {
 
-	// Use the API key to find the user in the database
-	// this queries the DB and returns the matching user
-	user, err := cfg.DB.GetUserByAPIKey(r.Context(), apiKey)
-	if err != nil {
-		// If user not found, return error
-		respondWithError(w, http.StatusNotFound, "Couldn't get user")
-		return
-	}
+// 	// Read API key from request headers
+// 	// auth.GetAPIKey looks for a key like: Authorization: ApiKey xxxx
+// 	apiKey, err := auth.GetAPIKey(r.Header)
+// 	if err != nil {
+// 		// If API key is missing or invalid, return unauthorized error
+// 		respondWithError(w, http.StatusUnauthorized, "Couldn't find api key")
+// 		return
+// 	}
 
-	// Convert database user into API response format
+// 	// Use the API key to find the user in the database
+// 	// this queries the DB and returns the matching user
+// 	user, err := cfg.DB.GetUserByAPIKey(r.Context(), apiKey)
+// 	if err != nil {
+// 		// If user not found, return error
+// 		respondWithError(w, http.StatusNotFound, "Couldn't get user")
+// 		return
+// 	}
+
+// 	// Convert database user into API response format
 	
+// 	// and send it back as JSON response
+// 	respondWithJSON(w, http.StatusOK, databaseUserToUser(user))
+// }
+
+
+
+
+// new way request → middlewareAuth → read API key → query DB → handlerUsersGet → respond
+
+func (cfg *apiConfig) handlerUsersGet(w http.ResponseWriter, r *http.Request, user database.User) {
+
 	// and send it back as JSON response
 	respondWithJSON(w, http.StatusOK, databaseUserToUser(user))
 }
